@@ -56,7 +56,7 @@ this.transDataList=transDataList;
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TransData tr=transDataList.get(position);
-        holder.transDate.setText(tr.getConvrt_time());
+        holder.transDate.setText(tr.getPaymenTS());
         holder.transId.setText("Transaction no. "+tr.getTransactionId());
         holder.transRs.setText("Rs. "+tr.getAmount());
     }

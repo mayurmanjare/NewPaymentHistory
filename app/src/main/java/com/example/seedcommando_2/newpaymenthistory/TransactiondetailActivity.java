@@ -3,6 +3,7 @@ package com.example.seedcommando_2.newpaymenthistory;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 public class TransactiondetailActivity extends AppCompatActivity {
 
 TextView tv;
-    View line1, line2,line3;
+
 
     TextView activationStatus,tansDate,payModelbl,payMode,transamt,transamtlbl,transNumber;
     Intent intent1;
@@ -23,9 +24,7 @@ TextView tv;
 
     public  void findViewbyID()
     {
-        line1 =(View) findViewById(R.id.line1);
-        line2 =(View) findViewById(R.id.line2);
-        line3 =(View) findViewById(R.id.line3);
+
         tv=(TextView) findViewById(R.id.textView8);
         activationStatus=(TextView)findViewById(R.id.textView9);
 
@@ -59,7 +58,7 @@ TextView tv;
         orderId = transData.getOrderId();
         transactionId = transData.getTransactionId();
         paymentStatus = transData.getPaymentStatus();
-        paymentTS=transData.getConvrt_time();
+        paymentTS=transData.getPaymenTS();
     }
     public  void setTransData()
     {
@@ -89,7 +88,7 @@ TextView tv;
             activationStatus.setText("Your sling cource has been  not activated");
             tansDate.setText(paymentTS);
             payModelbl.setText("Payment Method");
-            payMode.setText(paymentMethod);
+            payMode.setText(paymentMethod+"");
             transamtlbl.setText("Amount"+"          "+"OrderNo");
             transamt.setText("Rs. "+amount+"        "+orderId);
             transNumber.setText("Transcation number"+"\n"+transactionId);
@@ -97,20 +96,36 @@ TextView tv;
         }
         else
         {
-            tv.setText("PAYMENT FAILED"+"\n"+"Your sling cource has been not activated");
-            line1.setVisibility(View.INVISIBLE);
-            line2.setVisibility(View.INVISIBLE);
-            line3.setVisibility(View.INVISIBLE);
-            activationStatus.setVisibility(View.INVISIBLE);
-            tansDate.setVisibility(View.INVISIBLE);
-            payModelbl.setVisibility(View.INVISIBLE);
-            payMode.setVisibility(View.INVISIBLE);
-            transamtlbl.setVisibility(View.INVISIBLE);
-            transamt.setVisibility(View.INVISIBLE);
-            transNumber.setVisibility(View.INVISIBLE);
+            tv.setText("PAYMENT FAILED");
+            activationStatus.setText("Your sling cource has been not activated");
+            tansDate.setText(paymentTS);
+            payModelbl.setText("Payment Method");
+            payMode.setText(paymentMethod);
+            if(payMode.getText().toString().equals("Paytm"))
+            {
+                payMode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.pytm,0,0,0);
+            }
+            else
+            {
+                payMode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.viks,0,0,0);
+
+            }
+            transamtlbl.setText("Amount"+"        "+"OrderNo");
+            transamt.setText("Rs. "+amount+"        "+orderId);
+            transNumber.setText("Transcation number"+"\n"+transactionId);
 
         }
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

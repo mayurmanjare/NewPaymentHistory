@@ -1,5 +1,8 @@
 package com.example.seedcommando_2.newpaymenthistory;
 
+
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -7,12 +10,21 @@ import java.io.Serializable;
  */
 
 public class TransData implements Serializable {
-    String convrt_time;
+    @SerializedName("paymenTS")
+    String paymenTS;
+    @SerializedName("paymentMode")
     String paymentMode;
+    @SerializedName("orderId")
     String orderId;
+    @SerializedName("amount")
+    String amount ;
+    @SerializedName("transactionId")
+    String transactionId ;
+    @SerializedName("paymentStatus")
+    String paymentStatus;
 
-    public TransData(String convrt_time, String paymentMode, String orderId, String amount, String transactionId, String paymentStatus) {
-        this.convrt_time = convrt_time;
+    public TransData( String paymentMode, String orderId, String amount, String transactionId, String paymentStatus,String paymenTS) {
+        this.paymenTS = paymenTS;
         this.paymentMode = paymentMode;
         this.orderId = orderId;
         this.amount = amount;
@@ -20,9 +32,7 @@ public class TransData implements Serializable {
         this.paymentStatus = paymentStatus;
     }
 
-    String amount ;
-    String transactionId ;
-    String paymentStatus;
+
     public String getPaymentMode() {
         return paymentMode;
     }
@@ -31,12 +41,16 @@ public class TransData implements Serializable {
         this.paymentMode = paymentMode;
     }
 
-    public String getConvrt_time() {
-        return convrt_time;
+
+    public String getPaymenTS() {
+
+        return  paymenTS;
     }
 
-    public void setConvrt_time(String convrt_time) {
-        this.convrt_time = convrt_time;
+
+
+    public void setPaymenTS(String paymenTS) {
+        this.paymenTS =paymenTS;
     }
 
     public String getAmount() {

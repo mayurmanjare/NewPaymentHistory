@@ -9,9 +9,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +24,9 @@ private List<TransData> transactionList=new ArrayList<>();
     private RecyclerView rv;
     private  TransAdapter transadpt;
     private ProgressDialog pDialog;
+    String transdata;
+    Myhtttp p;
+
 
 
 
@@ -36,10 +39,11 @@ private List<TransData> transactionList=new ArrayList<>();
         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(mLayoutManager);
         rv.setItemAnimator(new DefaultItemAnimator());
-
         new GetTransactionData().execute();
+
         rv.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
         rv.setAdapter(transadpt);
+
 
         rv.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), rv ,new RecyclerItemClickListener.OnItemClickListener() {
@@ -50,10 +54,11 @@ private List<TransData> transactionList=new ArrayList<>();
                         TransData t=  transactionList.get(position);
                         intent.putExtra("Object",t);
                         startActivity(intent);
+
                     }
 
                     @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
+
                     }
                 })
         );
@@ -63,7 +68,8 @@ private List<TransData> transactionList=new ArrayList<>();
 
     }
 
-    private class GetTransactionData extends AsyncTask<Void, Void, Void> {
+
+    private class GetTransactionData extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -74,11 +80,11 @@ private List<TransData> transactionList=new ArrayList<>();
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected String doInBackground(String... arg0) {
 
             // Making a request to url and getting response
-            Myhtttp p=new Myhtttp();
-            String transdata=p.fetchData();
+             p=new Myhtttp();
+            transdata=p.fetchData();
 
 
             if (transdata != null) {
@@ -86,18 +92,15 @@ private List<TransData> transactionList=new ArrayList<>();
                     // Getting JSON Array node
                     JSONObject transjsonobj = new JSONObject(transdata);
                     JSONArray obb = transjsonobj.getJSONArray("paymentHistoryList");
-
                     // looping through All transaction
                     for (int i = 0; i < obb.length(); i++) {
                         JSONObject c = obb.getJSONObject(i);
-                        long paymenTS =Long.parseLong(c.getString("paymentTS"));
-                        TransData t=new TransData("","","","","","");
-                        t.setAmount(c.getString("amount"));
-                        t.setConvrt_time(new Timestamps().getdata(paymenTS));
-                        t.setOrderId(c.getString("orderId"));
-                        t.setPaymentMode(c.getString("paymentMode"));
-                        t.setTransactionId( c.getString("transactionId").toString());
-                        t.setPaymentStatus(c.getString("paymentStatus"));
+                        String my=c.toString();
+                         long paymenTS =Long.parseLong(c.getString("paymentTS"));
+                        //Serealization using  GSON LIBRARY
+                        Gson gson = new Gson();
+                        TransData   t = gson.fromJson( my, TransData.class );
+                        t.setPaymenTS(new Timestamps().getdata(paymenTS));
                         transactionList.add(t);
 
                     }
@@ -128,11 +131,11 @@ private List<TransData> transactionList=new ArrayList<>();
 
             }
 
-            return null;
+            return transdata;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             // Dismiss the progress dialog
             if (pDialog.isShowing())
@@ -150,4 +153,5 @@ private List<TransData> transactionList=new ArrayList<>();
 
 
     }
+
 }
